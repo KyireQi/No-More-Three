@@ -488,3 +488,108 @@ print('My teacher is {a},he is {b} years old'.format(a = name,b = age))
 
 详情请见：
 [python 官方文档](https://docs.python.org/zh-cn/3/library/string.html#formatspec)
+
+## 文件读写
+
+`Python`内置文件对象`file`使用`open()`函数打开文件并创建文件对象，最常见的用法有两个参数：`filename`即文件名（文件路径），`mode`即打开路径。
+```python
+f = open('readme.md','r')
+```
+`r` : `reading`，**读取**文件
+`w` : `writting`，**写入**文件。
+
+### `mode`操作
+|字符|意义|
+|:-|:-|
+|`r`|读取(默认)|
+|`w`|写入，并先截断文件|
+|`x`|排他性创建，如果存在文件则失败|
+|`a`|写入，如果文件存在则在末尾追加|
+|`b`|二进制模式|
+|`t`|文本模式|
+|`+`|打开用于更新（读取并写入）|
+
+```python
+
+f = open('log.txt','wb')
+
+str = 'Hello,World'
+
+print(str.encode())
+
+print(type(str.encode()))
+
+f.write(str.encode())
+
+f.close()
+```  
+注意这里，之所以单独给列出来就是因为这个神奇的`str`转换`bytes`。如果这个东西不转换的话会报错：
+`TypeError:a bytes-like object is required, not 'str'` 
+所以解决的方法就是把`str`用`encode()`函数转换成字节类型。
+```python
+f = open('log.txt','r+')
+
+content = f.read()
+
+print(content)
+
+str = 'Hello,World'
+
+print(str)
+
+f.write(str)
+
+f.close()
+```
+在`mode`后面加一个`+`就可以实现读取 + 写入
+
+### 文件对象的方法
+
+|方法|参数|返回值|
+|:-|:-|:-|
+|`file.read(size = -1)`|可选，以字节为单位的读取长度，不填则返回整个文件内容|返回一个字符串或者二进制bytes|
+|`file.readline(size = -1)`|可选，以字节为单位的读取长度，不填则返回整行|返回整行，包括换行符`\n`|
+|`file.readlines(hint = -1)`|可选，读取的行数，不慎则返回所有行|返回一个字符串或者二进制`bytes`组成的**列表**|
+|`file.write(s)`|一个写入的字符串|返回成功写入的字符数量|
+|`file.tell()`|无|返回一个整数，表示目前访问的文件位置在多少字节处|
+|`file.seek(offset,whence = SEEK_SET)`|`offset`表示将当前位置移到偏移处`whence`表示从哪里开始计算偏移|返回一个整数，新的文件位置|
+```python
+f = open('log.txt')
+
+content = f.readline()
+
+while content:
+    print(content,end = '')
+    content = f.readline()
+
+f.close()
+```
+**注意：** 这里包含了一个隐藏知识：如果我们的文件全部读取完毕，那么`readline()`函数是要返回一个**空字符串**。
+```python
+f = open('log.txt')
+
+content = f.readlines()
+
+print(content)
+
+print(type(content))
+```
+输出：
+`['Hello,World']` 
+`<class 'list'>`  
+
+```python
+f = open('log.txt','rb')
+
+f.seek(-1,2) 
+
+content = f.readline()
+
+print(content)
+
+f.close()
+```
+**注意：** 关于`seek`的几点用法：
+
+- 注意`whence`的取值的意义：`0`表示从文件开头起算，`1`表示使用当前文件位置，`2`表示使用文件末尾作为参考点。 `whence`如果省略则默认值为 0，即使用**文件开头**作为参考点。
+- 在`Python3`中如果使用`whence = 2`，那么文件在打开时**必须**使用`b`指令。
