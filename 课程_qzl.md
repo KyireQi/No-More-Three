@@ -593,3 +593,86 @@ f.close()
 
 - 注意`whence`的取值的意义：`0`表示从文件开头起算，`1`表示使用当前文件位置，`2`表示使用文件末尾作为参考点。 `whence`如果省略则默认值为 0，即使用**文件开头**作为参考点。
 - 在`Python3`中如果使用`whence = 2`，那么文件在打开时**必须**使用`b`指令。
+# 类
+
+`Python`中使用`class`关键字来定义类，类要遵循以下格式：
+```python
+class Name:
+    def __init__(self,参数):
+        ......
+    def 方法名1(self,参数):
+        ......
+    def 方法名2(self,参数):
+        ......
+```
+这里是一个很特殊的`__init__`用法，这是**进行初始化的方法**，也称为**构造函数**，只在生成类的实例时被调用一次。此外，在方法的第一个参数中写入表示自身的`self`也是`Python`的一个特点。
+```python
+class Man:
+    def __init__ (self,name) :
+        self.name = name
+        print("Intialized")
+    
+    def hello(self) :
+        print("Hello " + self.name + '!')
+    
+    def goodbye(self) : 
+        print("Goodbye " + self.name + '!')
+
+m = Man("David")
+
+m.hello()
+
+m.goodbye()
+```
+输出结果：
+```
+Intialized
+Hello David!
+Goodbye David!
+```
+
+# Numpy
+
+`numpy`是一种第三方库，在使用的时候需要用`import`语句来导入。
+```python
+import numpy as np
+```
+
+## 生成`Numpy`数组
+
+生成`Numpy`数组，需要使用`np.array()`的方法，`np.array()`接受列表作为参数，生成`Numpy`数组`numpy.ndarray`
+```python
+import numpy as np
+
+x = np.array([1.0,2.0,3.0])
+```
+
+## Numpy的算术运算
+
+主要是给一些例子：
+```python
+import numpy as np
+
+x = np.array([1.0,2.0,3.0])
+
+y = np.array([4.0,5.0,6.0])
+
+#element-wise calculate
+print(x + y) 
+
+print(x - y)
+
+print(x * y)
+
+print(x / y)
+```
+这里需要注意的是：**数组x和数组y的元素个数是相同的**，当x和y的元素个数相同时，可以对各个元素进行算术运算。**如果元素个数不同，程序就会报错。**
+`element-wise`是指的**对应元素运算**。
+同时，`Numpy`数组不仅可以进行`element-wise`运算，也可以和单一的数值（标量）进行计算。
+```python
+import numpy as np
+
+x = np.array([1.0,2.0,3.0])
+
+print(x / 2.0)
+```
