@@ -676,3 +676,248 @@ x = np.array([1.0,2.0,3.0])
 
 print(x / 2.0)
 ```
+## `Numpy`的N维数组
+
+`Numpy`不仅可以生成一维数组（排成一列的数组），也可以生成多维数组。比如最常见的二维数组 **（矩阵）**
+```python
+import numpy as np
+
+A = np.array([[1,2],[3,4]])
+
+print(A)
+
+print(A.shape)
+
+print(A.dtype)
+```   
+这里生成了一个$2 * 2$的矩阵A。另外，矩阵A的形状可以通过`shape`查看，矩形元素的数据类型可以通过`dtype`查看。
+
+### 矩阵的算术运算
+
+```python
+import numpy as np
+
+A = np.array([[1,2],[3,4]])
+
+B = np.array([[3,0],[1,4]])
+
+print(A + B)
+
+print(A * B)
+```
+```
+[[4 2]
+ [4 8]]
+[[ 3  0]
+ [ 3 16]]
+```
+和数组的算术运算一样，矩阵的算术运算也可以在**相同形状**的矩阵间以对应元素的方式进行。并且，也可以通过**标量（单一数值）** 对矩阵进行算术运算。这也是基于**广播**的功能。
+```python
+import numpy as np
+
+A = np.array([[1,2],[3,4]])
+
+print(4 * A)
+```
+```
+[[ 4  8]
+ [12 16]]
+```
+`Numpy`数组(`np.array`)可以生成`N`维数组，即可以生成一维数组、二维数组、三维数组等**任意维数**的数组。我们一般将一维数组称为**向量**，将二维数组称为**矩阵**，三维及其以上的数组称为**张量**或**多维数组**
+## 广播 Broadcasting
+`Numpy`中，形状不同的数组之间也可以进行运算。之前的例子中，在$2 * 2$的矩阵A和10之间进行了乘法运算。在这个过程中，标量10被扩展$2 * 2$的形状，然后再与矩阵A进行乘法运算。这个功能被称为**广播**
+其实当运算中的数组形状不同时，`numpy`将自动触发广播机制。
+```python
+import numpy as np
+ 
+a = np.array([[ 0, 0, 0],
+           [10,10,10],
+           [20,20,20],
+           [30,30,30]])
+b = np.array([1,2,3])
+
+print(a + b)
+```
+```
+[[ 1  2  3]
+ [11 12 13]
+ [21 22 23]
+ [31 32 33]]
+```
+![样例](https://www.runoob.com/wp-content/uploads/2018/10/image0020619.gif)  
+
+**广播的规则:**
+
+- 让所有输入数组都向其中**形状最长**的数组看齐，形状中不足的部分都通过在前面加1补齐。
+- 输出数组的形状是输入数组形状的各个维度上的最大值。
+- 如果输入数组的某个维度和输出数组的对应维度的长度相同或者其长度为 1 时，这个数组能够用来计算，否则出错。
+- 当输入数组的某个维度的长度为 1 时，沿着此维度运算时都用此维度上的第一组值。
+
+简单理解：对两个数组，分别比较他们的每一个维度（若其中一个数组没有当前维度则忽略），满足：
+- 数组拥有相同形状。
+- 当前维度的值相等。
+- 当前维度的值有一个是 1。
+若条件不满足，抛出`"ValueError: frames are not aligned"`异常。
+
+**PS:这些个东西是我爬下来的感觉我看了啥也没明白.....~~太菜了~~**
+
+简单概括一下就是:
+1. **行数**我们可以直接**忽略影响**,因为最后都可以补全
+2. 如果两个矩阵的**列数相同**或者**其中一个为标量**,只有一个元素例如`[1]`,那么也可以进行`Broadcasting`
+3. 否则必`WA`(~~废话~~)
+
+## 访问元素
+
+元素的索引从0开始.对各个元素的访问可以这样进行:
+```python
+import numpy as np
+ 
+a = np.array([[ 0, 0, 0],
+           [10,10,10],
+           [20,20,20],
+           [30,30,30]])
+
+print(a)
+
+print(a[0])
+
+print(a[0][1])
+```
+```
+[[ 0  0  0]
+ [10 10 10]
+ [20 20 20]
+ [30 30 30]]
+[0 0 0]
+0
+```
+其中`a[0]`表示访问第一行的元素,`a[0][1]`表示访问第一行第二列元素。
+
+和其他可迭代数据结构类似，`Numpy`数组也可以用`for`循环来实现迭代。
+```python
+import numpy as np
+ 
+a = np.array([[ 0, 0, 0],
+           [10,10,10],
+           [20,20,20],
+           [30,30,30]])
+
+for row in a :
+    print(row)
+
+for x in a[0] :
+    print(x)
+```
+```
+[0 0 0]
+[10 10 10]
+[20 20 20]
+[30 30 30]
+0
+0
+0
+```
+除了索引操作，`Numpy`还支持使用数组访问各个元素。
+```python
+import numpy as np
+ 
+a = np.array([[0,0,0],
+           [10,10,10],
+           [20,20,20],
+           [30,30,30]])
+
+x = a.flatten()
+
+print(x)
+
+print(x[np.array([0,4,10])]) #获取索引为0，4，10的元素
+```
+```
+[ 0  0  0 10 10 10 20 20 20 30 30 30]
+[ 0 10 30]
+```
+其中`flatten()`函数的作用是将`a`转换成一维数组。
+我们把这个方法称为**标记法**
+举例使用：
+```python
+import numpy as np
+ 
+a = np.array([[0,0,0],
+           [10,10,10],
+           [20,20,20],
+           [30,30,30]])
+
+x = a.flatten()
+
+print(x > 15)
+
+print(x[x > 15])
+```
+```
+[False False False False False False  True  True  True  True  True  True]
+[20 20 20 30 30 30]
+```
+直接对`Numpy`数组使用**不等号运算符**等，结果会出现一个`bool`型的数组。
+
+# `Matplotlib`
+
+`Matplotlib`的作用就是实现**图形的绘制**和**数据可视化**。
+## 绘制简单图形
+可以使用`matplotlib`的`pyplot`模板绘制图形。
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.arange(0,6,0.1)
+y = np.sin(x)
+
+plt.plot(x,y)
+plt.show()
+```
+<img src = "graph\sin(x).png" width = 600>
+**代码解释：**
+1. 我们使用了`Numpy`的`arange`方法生成了数据，这里可以参考`Matlab`，并将其设为`x`
+2. 对于`x`的各个元素，我们应用`Numpy`的`sin`函数`np.sin()`，将`x`，`y`的数据传递给`plt.plot()`，然后绘制图形。
+3. 最后我们通过`plt.show()`显示图形。
+
+我们现在设计一个更复杂的2D图像，加入`cos`并且我们加入标签，设计不同颜色。
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.arange(0,6,0.1)
+
+y = np.sin(x)
+
+plt.plot(x,y,color = 'blue',linestyle = '--',label = "sin(x)")
+
+z = np.cos(x)
+
+plt.plot(x,z,color = 'red',linestyle = '-',label = "cos(x)")
+
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("sin & cos")
+
+plt.legend() #这个东西是为了加图像说明
+plt.show()
+```
+<img src = "graph\cos&sin.png" width = 600>
+
+## 显示图像
+
+`pyplot`中还提供了用于显示图像的方法`imshow()`。另外我们也可以使用`matplotlib.image`模块的`imread()`方法读入图像。
+```python
+import matplotlib.pyplot as plt
+from matplotlib.image import imread
+
+img = imread("C:/Users/sdlwq/Desktop/Python/graph/Numpy-broadcasting.png")
+# img = imread(r"C:\Users\sdlwq\Desktop\Python\graph\Numpy-broadcasting.png")
+plt.imshow(img)
+
+plt.show()
+```
+**注意这里我们对于文件路径的处理：**
+由于在`Python`中，**`\`是一个转义字符**，所以`\u`表示其后是`UNICODE`编码，因此`\User`在这里会报错，解决方案是：
+1. 在路径前面加一个 **`r`**
+2. 把所有的`\`换成 **`/`**
