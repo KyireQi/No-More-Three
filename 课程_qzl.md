@@ -1001,3 +1001,184 @@ x1,x2 = map(int,input().split())
 
 print(And(x1,x2))
 ```
+### 导入权重和偏置
+
+我们把原式子中的$\theta$替换成$-b$这样我们可以换一种感知机的描述：
+$$y = \begin{cases}
+0 &\text{if \enspace} b + w_1x_1 + w_2x_2 \leqslant 0\\
+1 &\text{if \enspace} b + w_1x_1 + w_2x_2 \gt 0
+\end{cases} 
+$$
+此处，$b$称为偏置，$w_1$和$w_2$称为权重，感知机会计算输入信号和权重的乘积，然后加上偏置，如果这个值大于0则输出1，否则输出0。
+下面使用`Numpy`来实现感知机。
+```python
+>>> import numpy as np
+>>> x = np.array([0,1])
+>>> y = np.array([0.5,0.5])
+>>> b = x * y
+>>> b = -0.7
+>>> x * y
+array([0. , 0.5])
+>>> np.sum(x * y)
+0.5
+>>> np.sum(x * y) + b
+-0.19999999999999996
+```  
+**说明：** 在`Numpy`的数组乘法中，如果两个数组的元素个数相同则答案为各个元素分别相乘，否则就要动用**广播**，因此$x * y$的结果就是他们各个元素分别相乘。之后的$np.sum()$函数是计算各个元素的总和，它的使用**就是要计算所有元素的总和而不关心你所操作的数组是几维的**
+
+### 使用权重和偏置的实现
+
+我们可以结合着上面的权重和偏置实现与门。
+
+```python
+import numpy as np
+
+def AND(x1,x2) :
+    x = np.array([0.5,0.5])
+    y = np.array([x1,x2])
+    b = -0.7
+    tmp = np.sum(x * y) + b
+
+    if tmp >= 0:
+        return 1
+    else :
+        return 0
+
+x1,x2 = map(int,input().split())
+
+print(AND(x1,x2))
+```
+最后得出的结果和上面的一般形式的`AND`是一致的。
+**注意：**
+偏置和权重的作用是不一样的，具体一点说，$w_1$和$w_2$是**控制输入信号的重要参数**，而偏置是**调整神经元被激活的容易程度的参数**。**偏置的值决定了神经元被激活的容易程度。**
+
+我们下面可以实现一下**与非门**和**或门**。
+
+下面是**与非门**的代码
+```python
+import numpy as np
+
+def NAND(x1,x2) :
+    x = np.array([-0.5,-0.5])
+    y = np.array([x1,x2])
+    b = 0.7
+    tmp = np.sum(x * y) + b
+
+    if tmp >= 0:
+        return 1
+    else :
+        return 0
+
+x1,x2 = map(int,input().split())
+
+print(NAND(x1,x2))
+```
+下面是**或门**的代码
+```python
+import numpy as np
+
+def OR(x1,x2) :
+    x = np.array([0.5,0.5])
+    y = np.array([x1,x2])
+    b = -0.2
+    tmp = np.sum(x * y) + b
+
+    if tmp >= 0:
+        return 1
+    else :
+        return 0
+
+x1,x2 = map(int,input().split())
+
+print(OR(x1,x2))
+```
+我们已经知道，与门、或门、与非门是**具有相同构造的感知机**，区别就在于**权重**和**偏置**的不同。
+
+## 感知机的局限性
+
+我们现在已经知道，感知机可以实现与门、与非门和或门。但是我们会发现，我们无法找到一组合适的偏置和权值，使得感知机去实现异或门的功能!
+|$x_1$|$x_2$|$y$|
+|:-|:-|:-|
+|1|1|0|
+|0|1|1|
+|1|0|1|
+|0|0|0|
+现在我们怎么解释这一问题呢？
+我们现在把或门的动作形象化：我们取$(b,w_1,w_2) = (-0.5,1,1)$
+<img src = graph\OR.png width = 500>
+
+我们可以看到，或门的感知机表达式在$x-y$坐标上显示的就是一条直线$-0.5 + x_1 + x_2 = 0$，其中直线 **左方空间输出0，右方空间输出1**.
+
+可以从图像上看出，或门只有$(0,0)$这个点落在了左侧部分，这一点上看和或门的性质是一致的。
+
+但是我们可以发现，如果要用一条直线把异或门表达出来是不可能的，只能是**曲线形式**分开。
+
+### `Machine Learning` 中的线性和非线性
+
+感知机的局限性就在于，它只能表示由一条直线分割的空间，这样的空间称为**线性空间**，而需要用曲线分割的空间叫做**非线性空间**。
+
+## 多层感知机
+
+其实前面提到的所谓感知机的局限性，更多的反映在单层感知机上，但是我们可以通过多层感知机解决这些问题。
+
+### 通过已有门电路组合实现`Combination`
+
+我们先用之前的或门、与门和与非门设计一个异或门。
+<img src = 'graph\XORGate.png' width = 600> 
+下面我们尝试使用`Python`语言来实现异或门的组合。
+
+```python
+import numpy as np
+
+def AND(x1,x2) :
+    x = np.array([0.5,0.5])
+    y = np.array([x1,x2])
+    b = -0.7
+    tmp = np.sum(x * y) + b
+
+    if tmp >= 0:
+        return 1
+    else :
+        return 0
+
+def NAND(x1,x2) :
+    x = np.array([-0.5,-0.5])
+    y = np.array([x1,x2])
+    b = 0.7
+    tmp = np.sum(x * y) + b
+
+    if tmp >= 0:
+        return 1
+    else :
+        return 0
+
+def OR(x1,x2) :
+    x = np.array([0.5,0.5])
+    y = np.array([x1,x2])
+    b = -0.2
+    tmp = np.sum(x * y) + b
+
+    if tmp >= 0:
+        return 1
+    else :
+        return 0
+
+def XOR(x1,x2) :
+    s1 = NAND(x1,x2)
+    s2 = OR(x1,x2)
+    y = AND(s1,s2)
+    
+    return y
+
+x1,x2 = map(int,input().split())
+
+print(XOR(x1,x2))
+```
+这样子异或门就实现了
+
+### 感知机描述异或门
+
+<img src = 'graph\M-L-perceptron.png' width = 500>
+
+异或门就是一种**多层神经网络**，是一种**2层感知机**。
+**注意：** 这里说2层是因为只有在$(0,1)$和$(1,2)$层之间才有**权重**。
