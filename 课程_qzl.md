@@ -1,22 +1,16 @@
 # 基本数据结构
 
----
-
 ## bool逻辑
 
 1. 被定义为'假'的常量：`None` And `False`。（`False`的底层是一个**类似宏定义**的常量，**一般作为数字处理**，`None`一般针对**返回空**或者对象的处理）
 2. 任何数值类型的零：`0`,`0.0`,`0j`
 3. 空的序列和多项集：`''`,`()`,`[]`,`range(0)`
 
----
-
 ## bool运算
 
 和C语言相同，不再赘述。
 主要运算：`or`, `and`, `not`（`or`和`and`属于一种**短路运算**）
 注意这里的`not`和C语言中的`!`是一样的，但是`python`中没有`!`的用法
-
----
 
 ## 比较
 |运算|含义|
@@ -34,9 +28,7 @@
 ---
 
 # 分支语句
-`Python`和其他语言一样可以使用`if/else/elif`关键字判断条件实现程序分支。
-
----
+`Python`和其他语言一样可以使用`if/else/elif`关键字判断条件实现程序分支。 
 
 ## 循环语句
 
@@ -189,9 +181,10 @@ pairs = [(1,'one'),(2,'two'),(3,'thre'),(4,'four')]
 pairs.sort(key = cmd)
 print(pairs)
 ```
-# 数据结构进阶
 
 ---
+# 数据结构进阶
+
 ## 列表进阶操作
 
 列表的基本操作： **增加**，**更新**，**查找**和其他。
@@ -414,9 +407,10 @@ print(type(rank))
 
 **注意:** 第一个`ranking`属于列表类型,所以需要最后做一下转换,变成字典型的`rank`
 
+---
+
 # 输入输出
 
----
 ## 输入函数`input()`
 
 函数原型：`input(promot)`
@@ -631,6 +625,8 @@ Hello David!
 Goodbye David!
 ```
 
+---
+
 # Numpy
 
 `numpy`是一种第三方库，在使用的时候需要用`import`语句来导入。
@@ -676,6 +672,7 @@ x = np.array([1.0,2.0,3.0])
 
 print(x / 2.0)
 ```
+
 ## `Numpy`的N维数组
 
 `Numpy`不仅可以生成一维数组（排成一列的数组），也可以生成多维数组。比如最常见的二维数组 **（矩阵）**
@@ -859,6 +856,8 @@ print(x[x > 15])
 ```
 直接对`Numpy`数组使用**不等号运算符**等，结果会出现一个`bool`型的数组。
 
+---
+
 # `Matplotlib`
 
 `Matplotlib`的作用就是实现**图形的绘制**和**数据可视化**。
@@ -875,7 +874,8 @@ plt.plot(x,y)
 plt.show()
 ```
 <img src = "graph\sin(x).png" width = 600>
-**代码解释：**
+
+**代码解释:**
 1. 我们使用了`Numpy`的`arange`方法生成了数据，这里可以参考`Matlab`，并将其设为`x`
 2. 对于`x`的各个元素，我们应用`Numpy`的`sin`函数`np.sin()`，将`x`，`y`的数据传递给`plt.plot()`，然后绘制图形。
 3. 最后我们通过`plt.show()`显示图形。
@@ -921,6 +921,8 @@ plt.show()
 由于在`Python`中，**`\`是一个转义字符**，所以`\u`表示其后是`UNICODE`编码，因此`\User`在这里会报错，解决方案是：
 1. 在路径前面加一个 **`r`**
 2. 把所有的`\`换成 **`/`**
+
+---
 
 # 感知机
 
@@ -1182,3 +1184,487 @@ print(XOR(x1,x2))
 
 异或门就是一种**多层神经网络**，是一种**2层感知机**。
 **注意：** 这里说2层是因为只有在$(0,1)$和$(1,2)$层之间才有**权重**。
+
+---
+
+# 神经网络
+
+## 从感知机到神经网络
+
+我们从感知机的学习中发现，在涉及权重和偏置的工作中，我们都是通过人工来设定参数的。而神经网络恰好可以解决这个问题，神经网络的一个重要性质就是它可以**自动地从数据中学习到合适地权重参数**。
+<img src = "graph\NN3.png" width = 300>
+其中左边的一列称为**输入层(`input`)**，中间称为**中间层或者隐藏层(`Hidden`)**，右边的称为**输出层(`Output`)**对应分别为**第0层到第2层**。
+
+我们在之前知道了感知机的数学表达式
+$$y = \begin{cases}
+0 & \text{if \enspace} (b + w_1x_1 + w_2x_2) \leqslant 0 \\
+1 & \text{if \enspace} (b + w_1x_1 + w_2x_2) > 0
+\end{cases}
+$$
+btw，我们在之前没有把这个偏置`b`表示出来，如果要明确表示出来的话，我们可以这样写：
+<img src = "graph\PZD.png" width = 400>
+现在我们把感知机的数学表达式写成一个更简单的形式：
+$$y = h(b + w_1x_1 + w_2x_2)$$
+其中的$h(x)$是一个定义出的函数，表示这种分情况的动作（**超过0则输出1，否则输出0**）最后得到的表示式就是：
+$$h(x) = \begin{cases}
+0 & \text{} x \leqslant 0 \\
+1 & \text{} x > 0
+\end{cases}
+$$
+
+## 激活函数
+
+我们把上述的函数$h(x)$称为**激活函数**，激活函数的作用在于决定如何来激活输入信号的总和。
+所以我们可以把之前提到的步骤分为两步完成：
+$a = b + w_1x_1 + w_2x_2$
+$y = h(a)$
+所以最后我们的计算过程就是：
+<img src = "graph\激活函数显示.png" width = 500>
+激活函数以阈值为界，一旦输入超过阈值，就会切换输出，这样的函数称为 **“阶跃函数”**。因此，可以说**感知机中使用了阶跃函数作为激活函数。**
+
+### `sigmoid`函数
+
+神经网络中经常使用的一个激活函数就是`sigmoid`函数
+$$
+h(x) = \frac{1}{1 + exp(-x)}
+$$
+
+### 阶跃函数的实现
+
+这里我们试着用`Python`实现一下阶跃函数。
+
+简单实现：
+```python
+def step_function(x) :
+    if x > 0:
+        return 1
+    else :
+        return 0
+```
+但是这样的写法没有办法支持`numpy`数组的使用，我们改写一下：
+```python
+import numpy as np
+def step_function(x) :
+    y = x > 0
+    return y.astype(np.int)
+```
+下面我们解释一下这四行代码：
+```python
+>>> import numpy as np
+>>> x = np.array([-1.0,1.0,-2.0])
+>>> x
+array([-1.,  1., -2.])
+>>> y = x > 0
+>>> y
+array([False,  True, False])
+```
+可以看出，我们得到的`y`数组是一个`Bool`型的数组，现在我们需要把他转换成`int`型
+```python
+>>> y = y.astype(np.int)
+>>> y
+array([0, 1, 0])
+```
+如上所示，可以使用`np.astype()`转换`Numpy`数组的类型。`astype()`方法通过参数指定期望类型，这个例子中是`np.int`型。
+
+### 阶跃函数的图形
+
+下面我们用图来定义阶跃函数。
+```python
+import numpy as np
+import matplotlib.pylab as plt
+
+def step_function(x):
+    y = x > 0
+    return y.astype(np.int)
+
+x = np.arange(-5.0,5.0,0.1)
+y = step_function(x)
+plt.plot(x,y)
+plt.ylim(-0.1,1.1)
+plt.show()
+```
+得到的图像是：
+<img src = "graph\阶跃.png" width = 500>
+
+### `sigmoid`函数的实现
+
+```python
+import numpy as np
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+x = np.array([-1.0,1.0,2.0])
+print(sigmoid(x))
+# [0.26894142 0.73105858 0.88079708]
+```
+我们发现这样的操作相当于对所有元素做了`1 / 1 + exp()`运算，而之所以`sigmoid`函数支持`Numpy`的操作，就是因为`Numpy`的广播功能。**（只要是标量和`Numpy`数组之间的数值运算，就会触发`Numpy`的`Broadcasting`功能）**
+
+下面我们可以把`sigmoid`函数画出来：
+```python
+import numpy as np
+import matplotlib.pylab as plt
+
+def sigmoid(x) :
+    return 1 / (1 + np.exp(-x))
+
+x = np.arange(-5.0,5.0,0.1)
+y = sigmoid(x)
+plt.plot(x,y)
+plt.ylim(-0.1,1.1)
+plt.show()
+```
+<img src = "graph\sigmoid.png" width = 500>
+
+### `sigmoid`函数和阶跃函数的比较
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def sigmoid(x) :
+    return 1 / (1 + np.exp(-x))
+
+def step_function(x):
+    y = x > 0
+    return y.astype(np.int)
+
+x = np.arange(-5.0,5.0,0.1)
+y1 = sigmoid(x)W
+y2 = step_function(x)
+
+plt.plot(x,y1,linestyle = "--")
+plt.plot(x,y2,linestyle = "-")
+plt.legend()
+plt.show()
+```
+<img src = "graph\sig&step.png" width = 500>
+
+我们比较一下`sigmoid`函数和阶跃函数的区别：
+1. 图像的平滑度不同，可以明显得看出`sigmoid`函数比较与阶跃函数更为平滑。`sigmoid`输出随着输入发生连续性的变化，但是阶跃函数以0为边界，输出发生急剧的变化
+2. 阶跃函数只能从0突变到1，`sigmoid`函数却可以返回一些实数值。也就是说，感知机中流动的是0和1的二元信号，他是离散的，而神经网络中流动的是连续的实数值信号。
+
+下面我们分析一下两个函数的共性：
+
+尽管`sigmoid`函数和阶跃函数在图形平滑度上有差别，但是他们的**整体形状是相似的**，实际上，两者结构都是：
+**“输入小时，输出接近为0（或者是0），随着输入增大，输出向1靠近（或者变成1）”**。 也就是说，当输入信号为**重要信息**时，阶跃函数和`sigmoid`函数都会**输出较大的值**；当输入信号为**不重要的信息**时，两者都输出**较小的值**。
+此外，不管输入信号大小如何，输出信号的值都在0到1之间。
+
+### 非线性函数
+阶跃函数和`sigmoid`函数有一个共同点在于：两者均为**非线性函数**。
+**补充：**
+输出值是输入值常数倍的函数称为线性函数，数学表示：$h(x) = cx$，因此，线性函数的图像是一条直线。
+同时需要指出，神经网络的搭建必须使用非线性函数，换句话说，**激活函数不能是线性函数！**因为线性函数的问题在于，**不管加深多少层，总是存在与之等效的“无隐藏层神经网络”**
+
+## `Relu函数`
+
+ReLU函数的表示式如下:
+$$h(x) = \begin{cases}
+x &\text{\enspace} x > 0\\
+0 &\text{\enspace} x < 0
+\end{cases}
+$$
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def relu(x):
+    return np.maximum(0, x)
+
+x = np.arange(-5.0,5.0,0.1)
+y1 = relu(x)
+
+plt.plot(x,y1)
+plt.show()
+```
+<img src = "graph\relu.png" width = 500>
+
+**注：**
+这里我们使用了`Numpy`的`maximum`函数，同样支持`Boardcasting`
+
+## 多维数组的运算
+
+**多维数组就是数字的集合！**
+
+```python
+>>> import numpy as np
+>>> A = np.array([1,2,3,4])
+>>> A
+array([1, 2, 3, 4])
+>>> np.ndim(A)
+>>> A.shape
+(4,)
+>>> A.shape[0]
+4
+```
+数组的维数可以用`np.ndim()`获得。此外，数组的形状可以通过`shape`获得，但是执行`A.shape`返回的是一个**元组**，含义为`(row,column)`
+```python
+>>> B = np.array([[1,2],[3,4],[5,6]])
+>>> B
+array([[1, 2],
+       [3, 4],
+       [5, 6]])
+>>> np.ndim(B)
+2
+>>> B.shape
+(3, 2) #(row,column)
+```
+二维数组也称为**矩阵**
+
+### 矩阵乘法
+
+代码实现：
+```python
+>>> A = np.array([[1,2],[3,4]])
+>>> B = np.array([[1,2,3,4],[5,6,7,8]])
+>>> A.shape
+(2, 2)
+>>> B.shape
+(2, 4)
+>>> np.dot(A,B)
+array([[11, 14, 17, 20],
+       [23, 30, 37, 44]])
+```
+这里实现矩阵乘法（点乘）的函数是`np.dot()`，尤其注意`np.dot(A,B)`和`np.dot(B,A)`产生的结果可能不同。
+
+这里需要注意两点：
+
+- 矩阵相乘必须满足$n \times m \enspace \bullet \enspace m \times k$且最后得到的矩阵为$n \times k$
+- 对于一维数组和二维矩阵相乘，对应维度的个数也要保证相等。
+
+### 神经网络的内积
+
+下面使用`Numpy`实现神经网络
+<img src = "graph\单层神经网络.png" width = 500>
+```python
+>>> import numpy as np
+>>> A = np.array([1,2])
+>>> A.shape
+(2,)
+>>> W = np.array([[1,3,5],[2,4,6]])
+>>> W.shape
+(2, 3)
+>>> W
+array([[1, 3, 5],
+       [2, 4, 6]])
+>>> Y = np.dot(A,W)
+>>> Y
+array([ 5, 11, 17])
+```
+
+## 3层神经网络的实现
+
+<img src = "graph\Three CNN.png" width = 600>
+
+这里我们使用`Numpy`数组实现神经网络的前向处理（输入输出）
+
+### 各层间信号传递的实现
+
+<img src = "graph\input_first.png" width = 500>
+
+图示的第一层的传播方程为：
+
+$$
+a_{1}^{(1)} = w_{11}^{(1)}x_1 + w_{12}^{(1)}x_{2} + b_1
+$$
+
+**符号确认：**
+形如：$a_{1}^{(1)}$的$(1)$表示：第一层的权重，第一层的神经元。即是**权重和神经元的层号**。此外，权重$w_{12}^(1)$的右下角有两个数字，分别表示**后一层的神经元和前一层的神经元的索引号**。比如样例中给出的表示前一层的第二个神经元到后一层的第一个神经元$a_{1}^{(1)}$的权重，权重的右下角按照：**后一层的索引号，前一层的索引号**的顺序排列。
+
+我们现在按照矩阵的描述方法来描述这个式子：
+$$
+A^{(1)} = XW^{(1)} + B^{(1)}
+$$
+其中，$A^{(1)}$为一个$1 \times 3$的向量，$X$为一个$1 \times 2$的向量，$B^{(1)}$为一个$1 \times 3$的向量，$W$为一个$2 \times 3$的向量。
+
+如果我们加入了激活函数：
+<img src = "graph\addsigmoid.png" width = 500>
+这里的$h()$激活函数就可以使用我们之前的`sigmoid`函数。
+
+看一下输出层：
+<img src = "graph\firsttotwo.png" width = 500>
+和上一层不同的地方在于：我们第二层的输入就是第一层的输出，而且最后的输出函数我们记为$\sigma()$，关于输出函数使用的激活函数，需要根据求解问题的性质决定，一般地，**回归问题多用恒等函数**，**二元分类问题多用`sigmoid`函数**，**多元分类问题一般使用`softmax`函数**。
+关于输出层激活函数的介绍见下文
+给出整个3层神经网络的代码实现：
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def sigmoid(x) :
+    return 1 / (1 + np.exp(-x))
+
+def identity_function(x) :
+    return x
+
+X = np.array([1.0,0.5])
+W1 = np.array([[0.1,0.3,0.5],[0.2,0.4,0.6]])
+B1 = np.array([0.1,0.2,0.3])
+
+Y = np.dot(X,W1) + B1
+Z1 = sigmoid(Y)
+print(Y)
+print(Z1)
+
+W2 = np.array([[0.1,0.4],[0.2,0.5],[0.3,0.6]])
+B2 = np.array([[0.1,0.2]])
+
+Y = np.dot(Z1,W2) + B2
+Z2 = sigmoid(Y)
+print(Y)
+print(Z2)
+
+W3 = np.array([[0.1,0.3],[0.2,0.4]])
+B3 = np.array([0.1,0.2])
+
+Y = np.dot(Z2,W3) + B3
+Z3 = identity_function(Y)
+print(Y)
+print(Z3)
+```
+
+## 输出层的设计
+
+神经网络可以用在分类问题和回归问题上，不过需要根绝情况改变输出层的激活函数。一般而言，回归问题使用恒等函数，分类问题使用`softmax`函数。
+
+### 恒等函数和`softmax`函数
+
+恒等函数会将输入按照原样输出，对于输入的信息，不加以任何改动地直接输出。用神经网络图来表示的话，和前面介绍的隐藏层的激活函数一样，恒等函数进行的转换处理可以用**一根箭头**来表示。
+<img src = "graph\indentity.png" width = 700>
+
+分类问题中的`softmax`函数可以使用下式表示：
+$$
+y_k = \frac{exp(a_k)}{\displaystyle\sum_{i=1}^nexp({a_i})}
+$$
+上式表示假设输出层共有n个神经元，计算第k个神经元的输出$y_k$。从上式可以看出，**输出层的各个神经元都受到所有输入信号的影响。**
+<img src = "graph\softmax.png" width = 700>
+现在我们来实现`sigmoid`函数
+
+```python
+>>> import numpy as np
+>>> a = np.array([0.3,2.9,4.0])
+>>> a
+array([0.3, 2.9, 4. ])
+>>> exp_a = np.exp(a)
+>>> exp_a
+array([ 1.34985881, 18.17414537, 54.59815003])
+>>> sum_exp_a = np.sum(exp_a)
+>>> sum_exp_a
+74.1221542101633
+>>> y = exp_a / sum_exp_a
+>>> y
+array([0.01821127, 0.24519181, 0.73659691])
+```
+
+我们把它定义成一个函数：
+
+```python
+import numpy as np
+
+def softmax(x):
+    exp_x = np.exp(x)
+    sum_exp_x = np.sum(exp_x)
+    y = exp_x / sum_exp_x
+    return y
+
+a = np.arange(-1.0,1.0,0.1)
+print(softmax(a))
+```
+
+### 实现`softmax`函数的注意事项
+
+上面的`softmax`函数确实实现了$y_k = \frac{exp(a_k)}{\displaystyle\sum_{i=1}^nexp({a_i})}$但是存在一个溢出问题，**指数序列$e^x$** 的增长速度随着$x$的增大，**增长速度是趋于无穷**的。所以很容易爆掉$long \enspace long$
+**注意：**
+计算机在处理数的时候，数值必须在**4字节**或者**8字节**的有限数据宽度内。这就意味着存在**有效位数**。
+
+`softmax`函数的实现可以这样改进：
+$$
+y_k = \frac{Cexp(a_k)}{C\displaystyle\sum_{i = 1} ^ n exp(a_i)} = \frac{exp(a_k + ln(C))}{\displaystyle\sum_{i = 1} ^ n exp(a_i + ln(C))} = \frac{exp(a_k + C')}{\displaystyle\sum_{i = 1} ^ n exp(a_i +C')}
+$$
+由上式我们可以看出，在进行`softmax`函数的运算时，加上或者减去某个常数不会影响最后的结果。为了防止溢出，我们采用输入信号的最大值作为$C'$
+我们举出两个例子：
+```python
+import numpy as np
+
+def softmax(x):
+    exp_x = np.exp(x)
+    sum_exp_x = np.sum(exp_x)
+    y = exp_x / sum_exp_x
+    return y
+
+a = np.array([1010,1000,990])
+print(softmax(a))
+```
+终端会提示：
+```
+RuntimeWarning: overflow encountered in exp
+```
+并且输出：
+```
+RuntimeWarning: invalid value encountered in true_divide
+y = exp_x / sum_exp_x
+[nan nan nan]
+```
+`nan`为`Not a Number`
+
+但是如果我们这样写：
+
+```python
+import numpy as np
+
+def softmax(x):
+    c = np.max(x)
+    exp_x = np.exp(x - c)
+    sum_exp_x = np.sum(exp_x)
+    y = exp_x / sum_exp_x
+    return y
+
+a = np.array([1010,1000,990])
+print(softmax(a))
+```
+最后就可以得到正确的输出。所以以后我们的`softmax`函数的写法就是上述的代码。
+
+### `softmax`函数的特征
+使用`softmax`函数，可以按照如下方式计算神经网络的输出。
+
+```python
+import numpy as np
+
+def softmax(x):
+    c = np.max(x)
+    exp_x = np.exp(x - c)
+    sum_exp_x = np.sum(exp_x)
+    y = exp_x / sum_exp_x
+    return y
+
+a = np.array([0.3,3.9,4.0])
+y = softmax(a)
+print(y)
+print(np.sum(y))
+```
+输出结果：
+```
+[0.01281303 0.46893436 0.51825261]
+1.0
+```
+可以发现，`softmax`函数的输出都是0.0到1.0之间的实数，并且 **`softmax`的输出值和为1**！因为这个性质，我们才可以把`softmax`函数的输出解释为 **"概率"**
+
+我们可以把上面的例子从概率的角度分析一下：
+上面的例子我们可以认为是：
+$y[0]$的概率是0.0128，$y[1]$的概率是0.4689，$y[2]$的概率是0.5182
+因为**第三个元素的概率最高，所以答案是第三个类别**
+也就是说，通过`softmax`函数，我们可以用**概率的方法**处理问题。一般而言，神经网络只把输出值最大的神经元所对应的类别作为识别结果，其实就是在概率统计上分布最大者优先作为最终结果。
+求解机器学习问题的步骤可以分为“**学习**”和“**推理**”两个阶。首先在学习阶段进行**模型的学习**，然后在推理阶段，**用学到的模型对未知的数据进行推理（分类）**。
+
+### 输出层的神经元数量
+输出层神经元的数量需要根据待解决的问题决定。对于分类问题，输出神经元的层数一般设定为**类别的数量。**
+<img src = "graph\outputnumber.png" width = 500>
+这就是一个10分类问题。
+
+## 手写数字识别
+
+进入解决实际问题的环节了QAQ
+我们现在希望实现神经网络的 **“推理处理”** ，这个推理处理的过程也可以称为：**神经网络的“前向传播”**
+
+### MNIST数据集
+
